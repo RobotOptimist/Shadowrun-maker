@@ -32,7 +32,9 @@ namespace ShadowrunCharacterMaker
 
             //character object will load attributes from SQL
             newChar.SetAttribute(charID);
-            
+            newChar.SetAgilitySkills("Agility",charID);
+
+            MessageBox.Show(newChar.GetAgilitySkills("archery").ToString());
             //set int values during initialization according to what was loaded from SQL
             agility = newChar.GetCharInfoI("Agility");
             body = newChar.GetCharInfoI("Body");

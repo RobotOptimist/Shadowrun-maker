@@ -8,29 +8,25 @@ using System.Data.Sql;
 using System.Data.SqlTypes;
 
 namespace ShadowrunCharacterMaker
-{   //the character class is meant to hold all character variables, essentially creating a c# profile of the character.
-    //It's meant to be somewhat of a clone of the SQL information for the character
+{
+    struct AgilitySkills
+    {
+        public int archery, automatics, blades, clubs, escapeArtist, exoticMelee, exoticRanged, forgery, gunnery, gymnastics,
+            heavyWeapons, infiltration, locksmith, longarms, palming, pistols, throwingWeapons, unarmedCombat;
+    }
+    
+    
+    //the character class is meant to hold all character variables, essentially creating a c# profile of the character.
+    //It's meant to be somewhat of a clone of the SQL information for the character              
     class Character
     {
         
         private string name;
         private string race;
-        private int buildPoints;
-        private int agility;
-        private int body;
-        private int reaction;
-        private int strength;
-        private int logic;
-        private int charisma;
-        private int intuition;
-        private int willpower;
-        private int essence;
-        private int edge;
-        private int initiative;
-        private int magic;
-        private int resonance;
-        private int characterID;
-
+        private int buildPoints, agility, body, reaction, strength, logic, charisma, intuition, willpower, essence, edge, initiative, magic, resonance, initiativePasses, nuyen, characterID;
+        AgilitySkills agilitySkills = new AgilitySkills();
+        
+          
 
         //updates total buildpoints based on action made, true = spend points, false = acquire points
         //additionally tests for requirements that 0 buildpoints returns an error and spending > 200 buildpoints on attributes is an error
@@ -68,7 +64,7 @@ namespace ShadowrunCharacterMaker
             }
         }
 
-        //loads info for the character from the characters table in sql
+        //loads attribute info for the character from the characters table in sql
         public void SetAttribute(int charID)
         {
             ConnectShadowrun conShad = new ConnectShadowrun();
@@ -89,6 +85,82 @@ namespace ShadowrunCharacterMaker
             characterID = charID;
             name = conShad.GetCharacterInfoS("CharName", charID);
             race = conShad.GetCharacterInfoS("CharRace", charID);
+        }
+
+        //loads Agility Skills from SQL
+
+        public void SetAgilitySkills(string Name, int charID)
+        {
+            string query;
+            
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = @"Data Source=MACIVOR-PC\SQLEXPRESS;Initial Catalog=Shadowrun;Integrated Security=True";
+            conn.Open();
+            SqlCommand cmd = new SqlCommand();
+            
+            query = @"select skill, skillRating from CharacterSkills cs
+                                 where charid = @charID";
+            cmd.CommandText = query;
+            SqlDataReader reader = cmd.ExecuteReader();
+            cmd.Parameters.AddWithValue("@CharID", charID);
+
+            var sQLquery = new Dictionary<string, int>();
+
+            while (reader.Read())
+            {
+                sQLquery.Add(reader[0].ToString(), (int)reader[1]);
+            }
+
+            reader.Close();
+            conn.Close();
+
+            dynamic skills = ObjectFactory.CreateInstance(sQLquery);
+                     
+            agilitySkills.archery = skills.Archery;
+            agilitySkills.automatics = skills.Automatics;
+            agilitySkills.blades = skills.Blades;                     
+            agilitySkills.clubs = skills.Clubs;
+            agilitySkills.escapeArtist = skills.EscapeArtist;
+            agilitySkills.exoticMelee = skills.ExoticMeleeWeapon;
+            agilitySkills.exoticRanged = skills.ExoticRangedWeapon;
+            agilitySkills.forgery = skills.Forgery;
+            agilitySkills.gunnery = skills.Gunnery;
+            agilitySkills.gymnastics = skills.Gymnastics;
+            agilitySkills.heavyWeapons = skills.HeavyWeapons;
+            agilitySkills.infiltration = skills.Infiltration;
+            agilitySkills.locksmith = skills.Locksmith;
+            agilitySkills.longarms = skills.Longarms;
+            agilitySkills.palming = skills.Palming;
+            agilitySkills.pistols = skills.Pistols;
+            agilitySkills.throwingWeapons = skills.ThrowingWeapons;
+            agilitySkills.unarmedCombat = skills.UnarmedCombat;
+            
+        }
+
+        public int GetAgilitySkills(string Skill)
+        {
+            switch(Skill)
+            {
+                case "archery": return agilitySkills.archery;
+                case "automatics": return agilitySkills.automatics;
+                case "blades": return agilitySkills.blades;
+                case "clubs": return agilitySkills.clubs;
+                case "escapeArtist": return agilitySkills.escapeArtist;
+                case "exoticMeleeWeapon": return agilitySkills.exoticMelee;
+                case "exoticRangedWeapon": return agilitySkills.exoticRanged;
+                case "forgery": return agilitySkills.forgery;
+                case "gunnery": return agilitySkills.gunnery;
+                case "gymnastics": return agilitySkills.gymnastics;
+                case "heavyWeapons": return agilitySkills.heavyWeapons;
+                case "infiltration": return agilitySkills.infiltration;
+                case "locksmith": return agilitySkills.locksmith;
+                case "longarms": return agilitySkills.longarms;
+                case "palming": return agilitySkills.palming;
+                case "pistols": return agilitySkills.pistols;
+                case "throwingWeapons": return agilitySkills.throwingWeapons;
+                case "unarmedCombat": return agilitySkills.unarmedCombat;
+                default: return 9999;
+            }
         }
 
 
@@ -186,6 +258,9 @@ namespace ShadowrunCharacterMaker
         public string constr = @"Data Source=MACIVOR-PC\SQLEXPRESS;Initial Catalog=Shadowrun;Integrated Security=True";
 
         //creates a character in the db
+
+ 
+
         public int InsertCharacterName(string Name, string Race)
         {
             string insertCharStatement;
@@ -206,7 +281,7 @@ namespace ShadowrunCharacterMaker
                 getCharID = "select max(charid) from Characters";
                 cmd.CommandText = getCharID;
                 charID = (int)cmd.ExecuteScalar();
-            con.Close();
+            con.Close();           
             return charID;
         }
 
@@ -218,8 +293,10 @@ namespace ShadowrunCharacterMaker
             con = new SqlConnection();
             con.ConnectionString = constr;
             con.Open();
-                retrieveCharData = "select " + Name + " from Characters where charid = " + charID;
+                retrieveCharData = "select @name from Characters where charid = @charID";
                 cmd = new SqlCommand(retrieveCharData, con);
+                cmd.Parameters.AddWithValue("@name", Name);
+                cmd.Parameters.AddWithValue("@charID", charID);
                 giveData = cmd.ExecuteScalar().ToString();
             con.Close();
 
@@ -241,6 +318,45 @@ namespace ShadowrunCharacterMaker
 
             return giveData;
         }
+
+        public int GetSkillInfo(string skill, int charID)
+        {
+            string retrieveSkillData;
+                    
+            con = new SqlConnection();
+            con.ConnectionString = constr;
+            con.Open();
+            retrieveSkillData = @"select skill, skillRating from CharacterSkills cs
+                                 where charid = @charID";
+            cmd = new SqlCommand(retrieveSkillData, con);
+            cmd.Parameters.AddWithValue("@charID", charID);           
+            SqlDataReader reader = cmd.ExecuteReader();
+
+
+            while (reader.Read())
+                {
+                    string skilltest = reader[0].ToString();
+                    if (skilltest == skill)
+                    {
+                        int skillRating = (int)reader[1];
+                        reader.Close();
+                        con.Close();
+                        return skillRating;
+                    }
+                    else
+                    {
+                        reader.Close();
+                        con.Close();
+                        return 0000;
+                    }
+
+            }
+
+            reader.Close();
+            con.Close();
+            return 1234;
+        }
+
         //loads a character charID
         public object FindCharacterName(string Name)
         {
@@ -249,13 +365,14 @@ namespace ShadowrunCharacterMaker
             con = new SqlConnection();
             con.ConnectionString = constr;
             con.Open();
-            findCharacterName = "select charid from Characters where CharName = '" + Name + "'";
+            findCharacterName = "select charid from Characters where CharName = @name";
             cmd = new SqlCommand(findCharacterName, con);
+            cmd.Parameters.AddWithValue("@name", Name);
             charID = cmd.ExecuteScalar();
             return charID;
         }
 
-        //stub, will eventually change race and class
+        //stub, will eventually change race and name
         public void SetCharacterInfoS(int charID, string newName)
         {
         }
@@ -270,6 +387,11 @@ namespace ShadowrunCharacterMaker
             updateCharacterInfo = "update Characters set " + Name + " = " + newValue + " where charID = " + charID;
             cmd = new SqlCommand(updateCharacterInfo, con);
             cmd.ExecuteNonQuery();
+        }
+
+        //stub, will eventually update skills
+        public void SetCharacterSkills(int charID, string Name, int newValue)
+        {
         }
     }
 
