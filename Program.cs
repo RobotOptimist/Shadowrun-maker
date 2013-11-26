@@ -16,7 +16,7 @@ namespace ShadowrunCharacterMaker
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ShadowrunCharacterMaker());
+            Application.Run(new CharUpdater());
         }
     }
 }
