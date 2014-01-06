@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -77,6 +78,10 @@
             this.label46 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.QualitiesSelected = new System.Windows.Forms.ListBox();
+            this.saveCharacter = new System.Windows.Forms.SaveFileDialog();
+            this.LoadButton = new System.Windows.Forms.Button();
+            this.loadCharacter = new System.Windows.Forms.OpenFileDialog();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.resonanceUpDown = new ShadowrunCharacterMaker.AttributeUpDown();
             this.magicUpDown = new ShadowrunCharacterMaker.AttributeUpDown();
             this.edgeUpDown = new ShadowrunCharacterMaker.AttributeUpDown();
@@ -88,7 +93,10 @@
             this.strengthUpDown = new ShadowrunCharacterMaker.AttributeUpDown();
             this.bodyUpDown = new ShadowrunCharacterMaker.AttributeUpDown();
             this.agilityUpDown = new ShadowrunCharacterMaker.AttributeUpDown();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.attributesPanel.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.resonanceUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.magicUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.edgeUpDown)).BeginInit();
@@ -259,11 +267,11 @@
             // button3
             // 
             this.button3.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button3.Location = new System.Drawing.Point(144, 434);
+            this.button3.Location = new System.Drawing.Point(214, 434);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(71, 25);
             this.button3.TabIndex = 28;
-            this.button3.Text = "Cancel";
+            this.button3.Text = "Quit";
             this.button3.UseVisualStyleBackColor = true;
             // 
             // button4
@@ -565,10 +573,38 @@
             // QualitiesSelected
             // 
             this.QualitiesSelected.FormattingEnabled = true;
+            this.QualitiesSelected.HorizontalScrollbar = true;
             this.QualitiesSelected.Location = new System.Drawing.Point(278, 74);
             this.QualitiesSelected.Name = "QualitiesSelected";
             this.QualitiesSelected.Size = new System.Drawing.Size(129, 173);
             this.QualitiesSelected.TabIndex = 116;
+            // 
+            // saveCharacter
+            // 
+            this.saveCharacter.DefaultExt = "xml";
+            this.saveCharacter.InitialDirectory = "C:\\Users\\MacIvor\\Documents\\Shadowrun Characters\\";
+            // 
+            // LoadButton
+            // 
+            this.LoadButton.Location = new System.Drawing.Point(129, 434);
+            this.LoadButton.Name = "LoadButton";
+            this.LoadButton.Size = new System.Drawing.Size(71, 25);
+            this.LoadButton.TabIndex = 117;
+            this.LoadButton.Text = "Load";
+            this.LoadButton.UseVisualStyleBackColor = true;
+            this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
+            // 
+            // loadCharacter
+            // 
+            this.loadCharacter.InitialDirectory = "C:\\Users\\MacIvor\\Documents\\Shadowrun Characters";
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem2});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 48);
             // 
             // resonanceUpDown
             // 
@@ -661,12 +697,25 @@
             this.agilityUpDown.TabIndex = 102;
             this.agilityUpDown.ValueChanged += new System.EventHandler(this.AttributeUpDown_ValueChanged);
             // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem1.Text = "toolStripMenuItem1";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem2.Text = "toolStripMenuItem2";
+            // 
             // CharUpdater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button3;
             this.ClientSize = new System.Drawing.Size(953, 491);
+            this.Controls.Add(this.LoadButton);
             this.Controls.Add(this.QualitiesSelected);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.attributesPanel);
@@ -709,6 +758,7 @@
             this.Text = "Character Improvement";
             this.attributesPanel.ResumeLayout(false);
             this.attributesPanel.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.resonanceUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.magicUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.edgeUpDown)).EndInit();
@@ -787,5 +837,11 @@
         private System.Windows.Forms.Label label46;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ListBox QualitiesSelected;
+        private System.Windows.Forms.SaveFileDialog saveCharacter;
+        private System.Windows.Forms.Button LoadButton;
+        private System.Windows.Forms.OpenFileDialog loadCharacter;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
     }
 }

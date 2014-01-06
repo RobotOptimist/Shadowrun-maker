@@ -27,7 +27,7 @@ namespace ShadowrunCharacterMaker
             if (this.Value == this.Maximum && maxReached == false)
             {
                 bpCredit = 25;
-                character.buildPoints = character.BuildPointCost(character.buildPoints, bpCredit, false, true);
+                character.BuildPointCost(character, bpCredit, false, true);
                 bp.Text = character.buildPoints.ToString();
             }
             else if (this.Value == this.Minimum)
@@ -37,7 +37,7 @@ namespace ShadowrunCharacterMaker
             else
             {
                 bpCredit = 10;
-                character.buildPoints = character.BuildPointCost(character.buildPoints, bpCredit, false, true);
+                character.BuildPointCost(character, bpCredit, false, true);
                 bp.Text = character.buildPoints.ToString();
             }
             base.DownButton();
@@ -46,11 +46,15 @@ namespace ShadowrunCharacterMaker
         public override void UpButton()
         {
             int bpCost;
+            int bpTest;
+
 
             if (this.Value == this.Maximum-1 && maxReached == false)
             {
                 bpCost = 25;
-                character.buildPoints = character.BuildPointCost(character.buildPoints, bpCost, true, true);
+                bpTest = character.BuildPointCost(character, bpCost, true, true);
+                base.UpButton();
+                BPInsufficient(bpTest, bpCost);
                 bp.Text = character.buildPoints.ToString();
             }
             else if (this.Value == this.Maximum)
@@ -60,10 +64,22 @@ namespace ShadowrunCharacterMaker
             else
             {
                 bpCost = 10;
-                character.buildPoints = character.BuildPointCost(character.buildPoints, bpCost, true, true);
+                bpTest = character.BuildPointCost(character, bpCost, true, true);
+                base.UpButton();
+                BPInsufficient(bpTest, bpCost);
                 bp.Text = character.buildPoints.ToString();
             }
-            base.UpButton();
+
+        }
+
+        private void BPInsufficient(int bp, int bpCost)
+        {
+            if (bp <= 0)
+            {
+                this.Value = this.Value - 1;
+                character.BuildPointCost(character, bpCost, false, true);
+                MessageBox.Show("Insufficient Build Points");
+            }
         }
     }
 }

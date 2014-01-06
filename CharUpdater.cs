@@ -14,16 +14,15 @@ namespace ShadowrunCharacterMaker
     public partial class CharUpdater : Form
     {
 
-        int attributeCost = 10;
-        int skillCost = 4;
-        int skillGroupCost = 10;
-
         NewCharacter newChar = new NewCharacter();
-        Character character = new Character();        
+        Character character = new Character();                
+        CharacterRaceSwitched raceSwitch = new CharacterRaceSwitched();
 
         public CharUpdater()
         {
             InitializeComponent();
+
+            newChar.Create();
 
             System.Collections.Generic.List<AttributeUpDown> upDowns = new System.Collections.Generic.List<AttributeUpDown>();
             upDowns.Add(agilityUpDown);
@@ -42,31 +41,103 @@ namespace ShadowrunCharacterMaker
             {
                 n.SetParamCharacter(character, buildPoints);
             }
+
         }
 
         //adjusts attributes according to race per the methods in NewCharacter
         public void raceBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        {            
             switch (raceBox.Text)
             {
-                case "Human": newChar.CreateHuman(charName.Text);
-                    character.SetNewCharacterAttributes(newChar);
+                case "Human":
+                    this.SaveAttributes();
+                    raceSwitch.StoreValues(character, newChar);
+                    buildPoints.Text = character.buildPoints.ToString();                                        
+                    if (raceSwitch.humanSwitch == false)
+                    {
+                        newChar.CreateHuman();
+                        character.SetNewCharacterAttributes(newChar);
+                        buildPoints.Text = character.buildPoints.ToString();
+                    }
+                    else
+                    {
+                        newChar.CreateHuman();
+                        character.race = raceBox.Text;
+                        raceSwitch.GetRaceValues(character);
+                        buildPoints.Text = character.buildPoints.ToString();
+                    }
                     this.PopulateValues();
                     break;
-                case "Troll": newChar.CreateTroll(charName.Text);
-                    character.SetNewCharacterAttributes(newChar);
+                case "Troll":
+                    this.SaveAttributes();
+                    raceSwitch.StoreValues(character, newChar);
+                    if (raceSwitch.trollSwitch == false)
+                    {
+                        newChar.CreateTroll();
+                        character.SetNewCharacterAttributes(newChar);
+                        buildPoints.Text = character.buildPoints.ToString();
+                    }
+                    else
+                    {
+                        newChar.CreateTroll();
+                        character.race = raceBox.Text;
+                        raceSwitch.GetRaceValues(character);
+                        buildPoints.Text = character.buildPoints.ToString();
+                    }
                     this.PopulateValues();
                     break;
-                case "Ork": newChar.CreateOrk(charName.Text);
-                    character.SetNewCharacterAttributes(newChar);
+                case "Ork": 
+                    this.SaveAttributes();
+                    raceSwitch.StoreValues(character, newChar);
+                    if (raceSwitch.orkSwitch == false)
+                    {
+                        newChar.CreateOrk();
+                        character.SetNewCharacterAttributes(newChar);
+                        buildPoints.Text = character.buildPoints.ToString();
+                    }
+                    else
+                    {
+                        newChar.CreateOrk();
+                        character.race = raceBox.Text;
+                        raceSwitch.GetRaceValues(character);
+                        buildPoints.Text = character.buildPoints.ToString();
+                    }
+                    this.PopulateValues();                    
+                    break;
+                case "Elf": 
+                    this.SaveAttributes();
+                    raceSwitch.StoreValues(character, newChar);
+                    if (raceSwitch.elfSwitch == false)
+                    {
+                        newChar.CreateElf();
+                        character.SetNewCharacterAttributes(newChar);
+                        buildPoints.Text = character.buildPoints.ToString();
+                    }
+                    else
+                    {
+                        newChar.CreateElf();
+                        character.race = raceBox.Text;
+                        raceSwitch.GetRaceValues(character);
+                        buildPoints.Text = character.buildPoints.ToString();
+                    }
                     this.PopulateValues();
                     break;
-                case "Elf": newChar.CreateElf(charName.Text);
-                    character.SetNewCharacterAttributes(newChar);
-                    this.PopulateValues();
-                    break;
-                case "Dwarf": newChar.CreateDwarf(charName.Text);
-                    character.SetNewCharacterAttributes(newChar);
+                case "Dwarf": 
+                    this.SaveAttributes();
+                    raceSwitch.StoreValues(character, newChar);
+                    if (raceSwitch.dwarfSwitch == false)
+                    {
+                        newChar.CreateDwarf();
+                        character.SetNewCharacterAttributes(newChar);
+                        buildPoints.Text = character.buildPoints.ToString();
+                    }
+                    else
+                    {
+                        newChar.CreateDwarf();
+                        character.race = raceBox.Text;
+                        raceSwitch.GetRaceValues(character);
+                        buildPoints.Text = character.buildPoints.ToString();
+                    }
                     this.PopulateValues();
                     break;
                 default: break;
@@ -76,6 +147,7 @@ namespace ShadowrunCharacterMaker
 
         public void PopulateValues()
         {
+
             agilityUpDown.Minimum = newChar.agility[0];
             agilityUpDown.Maximum = newChar.agility[1];
             agilityUpDown.Value = character.agility;
@@ -120,11 +192,15 @@ namespace ShadowrunCharacterMaker
             
             InitiativeText.Text = character.initiative.ToString();
 
-            buildPoints.Text = character.buildPoints.ToString();
-
             EssenceText.Text = character.essence.ToString();
+
+            buildPoints.Text = character.buildPoints.ToString();
+            raceBox.Text = character.race;
         }
 
+
+        //this is code to adjust the maximum value of the attribute up downs. Only one attribute can max out.
+        //there is corresponding code in the AttributeUpDown class and in the Character class that works to achieve this
         public void AttributeUpDown_ValueChanged(object sender, EventArgs e)
         {
             AttributeUpDown attribute = (AttributeUpDown)sender;
@@ -179,14 +255,56 @@ namespace ShadowrunCharacterMaker
         {
             magicUpDown.Minimum = 1;
             magicUpDown.Value = 1;
-            character.magic = 1;
         }
 
-        public void SaveButton_Click(object sender, EventArgs e)
+        public void InitializeResonance()
+        {
+            resonanceUpDown.Minimum = 1;
+            resonanceUpDown.Value = 1;
+        }
+
+        public void SaveAttributes()
+        {
+            character.agility = (int)agilityUpDown.Value;
+            character.body = (int)bodyUpDown.Value;
+            character.strength = (int)strengthUpDown.Value;
+            character.reaction = (int)reactionUpDown.Value;
+            character.logic = (int)logicUpDown.Value;
+            character.charisma = (int)charismaUpDown.Value;
+            character.intuition = (int)intuitionUpDown.Value;
+            character.willpower = (int)willpowerUpDown.Value;
+            character.edge = (int)edgeUpDown.Value;
+            character.magic = (int)magicUpDown.Value;
+            character.resonance = (int)resonanceUpDown.Value;            
+        }
+
+        public void ExceptionalAttribute()
         {
 
         }
 
+        public void Aptitude()
+        {
 
+        }
+
+        public void SaveButton_Click(object sender, EventArgs e)
+        {   
+            saveCharacter.ShowDialog();
+            this.SaveAttributes();
+            string filename = saveCharacter.InitialDirectory + saveCharacter.FileName;
+            character.SaveCharacter(character,saveCharacter.FileName);
+            character.PopulateQualityList(QualitiesSelected, character.listOfSelectedPositiveQualities);
+        }
+
+        public void LoadButton_Click(object sender, EventArgs e)
+        {
+            loadCharacter.ShowDialog();
+            string filename = loadCharacter.FileName;
+            character = character.LoadCharacter(character, filename);
+            newChar.LoadRace(character.race);
+            this.PopulateValues();
+            character.RetrieveQualityList(QualitiesSelected, character.listOfSelectedPositiveQualities);
+        }
     }
 }

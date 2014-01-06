@@ -7,16 +7,12 @@ using System.Threading.Tasks;
 namespace ShadowrunCharacterMaker
 {
     
-   struct AgilitySkills
-   {
-            public int archery, automatics, blades, clubs, escapeArtist, exoticMelee, exoticRanged, forgery, gunnery, gymnastics,
-                heavyWeapons, infiltration, locksmith, longarms, palming, pistols, throwingWeapons, unarmedCombat;
-   }
-
-
+   //this class is meant to store the starting attributes and max attributes once race is selected.
     public class NewCharacter
     {
+        
         public int bp { get; set; }
+        public int startingBP = 400;
 
         public int[] agility { get; set; }
         public int[] body {get; set;}
@@ -31,14 +27,13 @@ namespace ShadowrunCharacterMaker
         public int essence{get; set;}
         public int magic{get; set;}
         public int resonance{get; set;}
-
-        public string name{get; set;}
+        public bool created;
+      
         public string race {get; set;}
         
         //attribute array first element is starting/minimum value, second element is max natural value, third element is max modified value
         public void Create()
-        {
-            name = "default";
+        {            
             race = "none";    
             agility =  new int[3] {1, 1, 1};
             body = new int[3] { 1, 1, 1 };
@@ -53,12 +48,12 @@ namespace ShadowrunCharacterMaker
             essence = 6;
             magic = 0;
             resonance = 0;
-            bp = 400;
+            bp = 0;
+            created = true;
         }
 
-        public void CreateHuman(string charName)
-        {
-            name = charName;
+        public void CreateHuman()
+        {            
             race = "Human";
             agility = new int[3] { 1, 6, 9 };
             body = new int[3] { 1, 6, 9 };
@@ -73,12 +68,12 @@ namespace ShadowrunCharacterMaker
             essence = 6;
             magic = 0;
             resonance = 0;
-            bp = 400;
+            bp = 0;
+            created = true;
         }
 
-        public void CreateTroll(string charName)
-        {
-            name = charName;
+        public void CreateTroll()
+        {            
             race = "Troll";
             agility = new int[3] { 1, 5, 7 };
             body = new int[3] { 5, 10, 15 };
@@ -93,12 +88,12 @@ namespace ShadowrunCharacterMaker
             essence = 6;
             magic = 0;
             resonance = 0;
-            bp = 360;
+            bp = 40;
+            created = true;
         }
 
-        public void CreateOrk(string charName)
-        {
-            name = charName;
+        public void CreateOrk()
+        {            
             race = "Ork";
             agility = new int[3] { 1, 6, 9 };
             body = new int[3] { 4, 9, 13 };
@@ -113,12 +108,12 @@ namespace ShadowrunCharacterMaker
             essence = 6;
             magic = 0;
             resonance = 0;
-            bp = 380;
+            bp = 20;
+            created = true;
         }
 
-        public void CreateDwarf(string charName)
-        {
-            name = charName;
+        public void CreateDwarf()
+        {            
             race = "Dwarf";
             agility = new int[3] { 1, 6, 9 };
             body = new int[3] { 2, 7, 10 };
@@ -133,12 +128,12 @@ namespace ShadowrunCharacterMaker
             essence = 6;
             magic = 0;
             resonance = 0;
-            bp = 375;
+            bp = 25;
+            created = true;
         }
 
-        public void CreateElf(string charName)
-        {
-            name = charName;
+        public void CreateElf()
+        {            
             race = "Elf";
             agility = new int[3] { 2, 7, 10 };
             body = new int[3] { 1, 6, 9 };
@@ -153,8 +148,27 @@ namespace ShadowrunCharacterMaker
             essence = 6;
             magic = 0;
             resonance = 0;
-            bp = 370;
+            bp = 30;
+            created = true;
         }
-    }
+        //this function is useful for creating an algorithm to change race
+        public void LoadRace(string race)
+        {
+            switch (race)
+            {
+                case "Human": CreateHuman();
+                    break;
+                case "Troll": CreateTroll();
+                    break;
+                case "Ork": CreateOrk();
+                    break;
+                case "Elf": CreateElf();
+                    break;
+                case "Dwarf": CreateDwarf();
+                    break;
+                default: break;
+            }
+        }
 
+    }   
 }

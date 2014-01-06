@@ -69,7 +69,6 @@
             "Natural Hardening",
             "Natural Immunity Rating One",
             "Natural Immunity Rating Two",
-            "Natural Immunity Rating Three",
             "Photographic Memory",
             "Quick Healer",
             "Resistance to Pathogens/Toxins Rating One",
@@ -103,11 +102,14 @@
             this.PQualityDone.TabIndex = 2;
             this.PQualityDone.Text = "Done";
             this.PQualityDone.UseVisualStyleBackColor = true;
+            this.PQualityDone.Click += new System.EventHandler(this.DoneButton_Click);
             // 
             // PositiveQualities
             // 
+            this.AcceptButton = this.PQualityDone;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.PQualityDone;
             this.ClientSize = new System.Drawing.Size(344, 262);
             this.Controls.Add(this.PQualityDone);
             this.Controls.Add(this.AddPQuality);
